@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Estação Meteorológica - TCC 2026</title>
+<!-- Fonte Inter do Google Fonts (igual ao site original) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* Reset e base - adaptado do SKYNETchat */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    min-height: 100vh;
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    background: #0a0a0a;
+    /* Gradiente vertical dramático - copiado do site original */
+    background-image: linear-gradient(
+      180deg,
+      #A11111 0%,
+      #751414 10%,
+      #3C0909 31%,
+      #330808 39%,
+      #2E0707 46%,
+      #290606 60%,
+      #260505 67%,
+      #230505 73%,
+      #210404 83%,
+      #1F0404 83%,
+      #1B0303 92%
+    );
+    background-attachment: fixed;
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    position: relative;
+    padding: 20px;
+  }
+
+  /* Efeito de partículas (simulado com CSS) - adaptado do particles.js do site */
+  #particles-simulado {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  
+  #particles-simulado::before,
+  #particles-simulado::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      radial-gradient(2px 2px at 10px 20px, rgba(255, 60, 60, 0.4), rgba(0,0,0,0)),
+      radial-gradient(2px 2px at 30px 70px, rgba(200, 50, 50, 0.3), rgba(0,0,0,0)),
+      radial-gradient(3px 3px at 80px 40px, rgba(255, 100, 100, 0.3), rgba(0,0,0,0)),
+      radial-gradient(1px 1px at 150px 120px, rgba(255, 80, 80, 0.5), rgba(0,0,0,0)),
+      radial-gradient(2px 2px at 250px 180px, rgba(255, 120, 120, 0.4), rgba(0,0,0,0)),
+      radial-gradient(3px 3px at 350px 90px, rgba(200, 60, 60, 0.3), rgba(0,0,0,0)),
+      radial-gradient(2px 2px at 450px 220px, rgba(255, 140, 140, 0.4), rgba(0,0,0,0)),
+      radial-gradient(1px 1px at 550px 150px, rgba(255, 90, 90, 0.5), rgba(0,0,0,0));
+    background-repeat: repeat;
+    background-size: 600px 400px;
+    animation: flutuar 40s infinite linear;
+    opacity: 0.5;
+  }
+  
+  #particles-simulado::after {
+    background-image: 
+      radial-gradient(1px 1px at 120px 300px, rgba(255, 200, 200, 0.6), rgba(0,0,0,0)),
+      radial-gradient(2px 2px at 220px 380px, rgba(255, 100, 100, 0.4), rgba(0,0,0,0)),
+      radial-gradient(3px 3px at 320px 280px, rgba(200, 80, 80, 0.3), rgba(0,0,0,0)),
+      radial-gradient(1px 1px at 420px 450px, rgba(255, 150, 150, 0.5), rgba(0,0,0,0));
+    animation: flutuar 60s infinite reverse;
+    opacity: 0.3;
+  }
+  
+  @keyframes flutuar {
+    0% { background-position: 0 0; }
+    100% { background-position: 600px 400px; }
+  }
+
+  /* Efeitos Glow - adaptado do .glow-ball do site original */
+  .glow-ball {
+    position: fixed;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(180, 40, 40, 0.25), transparent 70%);
+    filter: blur(60px);
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  .glow-top {
+    top: -150px;
+    right: -100px;
+    background: radial-gradient(circle, rgba(210, 60, 60, 0.3), transparent 70%);
+  }
+  
+  .glow-middle {
+    bottom: 20%;
+    left: -100px;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(150, 30, 30, 0.2), transparent 70%);
+  }
+  
+  .glow-bottom {
+    bottom: -150px;
+    right: 20%;
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(190, 50, 50, 0.25), transparent 70%);
+  }
+
+  /* Faixa de brilho no topo - igual ao site */
+  .top-glow-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    pointer-events: none;
+    background: linear-gradient(to bottom, rgba(185, 15, 15, 0.4), rgba(185, 15, 15, 0.2) 70%, transparent);
+    z-index: 2;
+    filter: blur(8px);
+  }
+
+  /* Título no estilo SKYNET */
+  h1 {
+    position: relative;
+    z-index: 10;
+    font-weight: 600;
+    font-size: 2.5rem;
+    letter-spacing: -0.02em;
+    margin: 30px 0 40px;
+    text-shadow: 0 4px 20px rgba(255, 0, 0, 0.3);
+    display: inline-block;
+    padding: 0 30px;
+  }
+  
+
+  /* Container dos cards com espaçamento */
+  .cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 15;
+  }
+
+  /* Cards no estilo do menu do SKYNETchat */
+  .card {
+    background: rgba(20, 20, 20, 0.7);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 28px 20px;
+    width: 240px;
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Efeito de hover do card (igual aos botões do site) */
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(180, 40, 40, 0.4);
+    box-shadow: 0 25px 45px -12px rgba(180, 0, 0, 0.4);
+    background: rgba(30, 30, 30, 0.8);
+  }
+  
+  .card:active {
+    transform: scale(0.98);
+  }
+  
+  /* Brilho interno nos cards (glow adaptado) */
+  .card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, transparent 40%, rgba(200, 60, 60, 0.2), transparent 60%);
+    border-radius: 24px;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  
+  .card:hover::before {
+    opacity: 1;
+  }
+
+  /* Títulos dos cards */
+  .card h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 15px;
+  }
+
+  /* Valores - estilo inspirado nos elementos de destaque */
+  .valor {
+    font-size: 3rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #fff, #ffb3b3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px rgba(255, 80, 80, 0.5);
+    line-height: 1.2;
+  }
+
+  /* Botão de atualização - estilo igual ao botão "Criar novo chat" do site */
+  .update-btn {
+    position: relative;
+    z-index: 20;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 12px 28px;
+    border-radius: 40px;
+    margin: 40px auto 20px;
+    cursor: pointer;
+    backdrop-filter: blur(5px);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  }
+  
+  .update-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 80, 80, 0.4);
+  }
+  
+  .update-btn:active {
+    transform: scale(0.97);
+  }
+  
+  /* Ícone SVG do botão (adaptado do site) */
+  .btn-icon {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+  }
+
+  /* Rodapé - inspirado no menu inferior */
+  .footer-note {
+    position: relative;
+    z-index: 20;
+    margin-top: 30px;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.4);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 20px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .footer-note a {
+    color: rgba(255, 150, 150, 0.7);
+    text-decoration: none;
+  }
+  
+  .footer-note a:hover {
+    color: #ffaaaa;
+  }
+  
+  /* Timestamp - estilo igual às tags do site */
+  .timestamp {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.6);
+    display: inline-block;
+    margin: 20px 0 0;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  /* Adaptação mobile */
+  @media (max-width: 600px) {
+    h1 { font-size: 1.8rem; }
+    .card { width: 100%; max-width: 280px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Partículas simuladas -->
+<div id="particles-simulado"></div>
+
+<!-- Bolhas de brilho (glow) -->
+<div class="glow-ball glow-top"></div>
+<div class="glow-ball glow-middle"></div>
+<div class="glow-ball glow-bottom"></div>
+
+<!-- Barra de brilho superior -->
+<div class="top-glow-bar"></div>
+
+<!-- Conteúdo principal -->
+<h1>ESTAÇÃO METEOROLÓGICA</h1>
+
+<div class="cards-container">
+  <div class="card">
+    <h3>Temperatura</h3>
+    <div class="valor" id="temp">--</div>
+  </div>
+
+  <div class="card">
+    <h3>Umidade</h3>
+    <div class="valor" id="hum">--</div>
+  </div>
+
+  <div class="card">
+    <h3>Pressão</h3>
+    <div class="valor" id="pres">--</div>
+  </div>
+</div>
+
+
+<!-- Timestamp com estilo do site -->
+<div class="timestamp" id="timestamp">Atualizando a cada 15s</div>
+
+<div class="footer-note">
+  <span>DADOS VIA THINGSPEAK • TCC 2026</span><br>
+
+</div>
+
+<script>
+const channelID = "3276829";
+
+function formatarTimestamp() {
+  const agora = new Date();
+  return `Última atualização: ${agora.toLocaleTimeString('pt-BR')}`;
+}
+
+async function atualizar(){
+  try {
+    const response = await fetch(
+      `https://api.thingspeak.com/channels/${channelID}/feeds.json?results=1`
+    );
+
+    const data = await response.json();
+    const feed = data.feeds[0];
+
+    document.getElementById("temp").innerText = feed.field1 + " °C";
+    document.getElementById("hum").innerText  = feed.field2 + " %";
+    document.getElementById("pres").innerText = feed.field3 + " hPa";
+    
+    // Atualiza timestamp
+    document.getElementById("timestamp").innerText = formatarTimestamp();
+    
+    // Pequeno efeito visual nos cards quando atualiza
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+      card.style.transition = 'all 0.1s';
+      card.style.borderColor = 'rgba(255, 100, 100, 0.6)';
+      setTimeout(() => {
+        card.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+      }, 200);
+    });
+    
+  } catch (error) {
+    console.error('Erro ao buscar dados:', error);
+    document.getElementById("timestamp").innerText = 'Erro na atualização';
+  }
+}
+
+// Atualização automática
+setInterval(atualizar, 15000);
+atualizar();
+
+// Atualiza timestamp inicial
+document.getElementById("timestamp").innerText = formatarTimestamp();
+</script>
+
+</body>
+</html>
