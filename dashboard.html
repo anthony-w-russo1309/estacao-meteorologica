@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <title>Estação Meteorológica - TCC 2026</title>
-<!-- Fonte Inter do Google Fonts (igual ao site original) -->
+<!-- Fonte Inter do Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  /* Reset e base - adaptado do SKYNETchat */
+  /* ===== RESET E BASE ===== */
   * {
     margin: 0;
     padding: 0;
@@ -17,34 +17,58 @@
 
   body {
     min-height: 100vh;
-    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
     background: #0a0a0a;
-    /* Gradiente vertical dramático - copiado do site original */
-    background-image: linear-gradient(
-      180deg,
-      #A11111 0%,
-      #751414 10%,
-      #3C0909 31%,
-      #330808 39%,
-      #2E0707 46%,
-      #290606 60%,
-      #260505 67%,
-      #230505 73%,
-      #210404 83%,
-      #1F0404 83%,
-      #1B0303 92%
-    );
-    background-attachment: fixed;
+    position: relative;
     color: #fff;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
-    position: relative;
-    padding: 20px;
+
+    /* Gradiente de fundo principal (será substituído pelos temas) */
+    background-image: linear-gradient(
+      180deg,
+      var(--grad-start) 0%,
+      var(--grad-mid1) 10%,
+      var(--grad-mid2) 31%,
+      var(--grad-mid3) 39%,
+      var(--grad-mid4) 46%,
+      var(--grad-mid5) 60%,
+      var(--grad-mid6) 67%,
+      var(--grad-mid7) 73%,
+      var(--grad-mid8) 83%,
+      var(--grad-mid9) 83%,
+      var(--grad-end) 92%
+    );
+    background-attachment: fixed;
+
+    /* Transição suave entre temas */
+    transition: background-image 0.5s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+
+    /* === NOVO: flex para centralizar conteúdo === */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px; /* padding lateral apenas para não encostar nas bordas */
   }
 
-  /* Efeito de partículas (simulado com CSS) - adaptado do particles.js do site */
-  #particles-simulado {
+  /* Container principal que agrupa todo o conteúdo central */
+  .main-content {
+    width: 100%;
+    max-width: 1200px; /* ou o valor que preferir */
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    position: relative;
+  }
+
+  /* Mancha de fundo exclusiva para cada tema */
+  body::after {
+    content: '';
     position: fixed;
     top: 0;
     left: 0;
@@ -52,6 +76,195 @@
     height: 100%;
     pointer-events: none;
     z-index: 0;
+    opacity: 0.5;
+    mix-blend-mode: overlay;
+    transition: background 0.5s ease, transform 0.5s ease;
+  }
+
+  /* ===== VARIÁVEIS DE TEMA (padrão = clássico vermelho) ===== */
+  body {
+    --grad-start: #A11111;
+    --grad-mid1: #751414;
+    --grad-mid2: #3C0909;
+    --grad-mid3: #330808;
+    --grad-mid4: #2E0707;
+    --grad-mid5: #290606;
+    --grad-mid6: #260505;
+    --grad-mid7: #230505;
+    --grad-mid8: #210404;
+    --grad-mid9: #1F0404;
+    --grad-end: #1B0303;
+    --glow-color: rgba(180, 40, 40, 0.25);
+    --glow-color-intense: rgba(210, 60, 60, 0.3);
+    --card-hover-border: rgba(180, 40, 40, 0.4);
+    --card-hover-shadow: rgba(180, 0, 0, 0.4);
+    --top-glow: rgba(185, 15, 15, 0.4);
+  }
+
+  /* Mancha do tema clássico (círculo suave no canto superior direito) */
+  body.theme-classic::after {
+    background: radial-gradient(circle at 80% 20%, rgba(180,40,40,0.4), transparent 50%);
+    transform: scale(1.2) translate(5%, -5%);
+  }
+
+  /* Tema Azul Elétrico */
+  body.theme-azul {
+    --grad-start: #0a4da4;
+    --grad-mid1: #0a3d84;
+    --grad-mid2: #0a2e64;
+    --grad-mid3: #0a2650;
+    --grad-mid4: #0a1f40;
+    --grad-mid5: #0a1830;
+    --grad-mid6: #0a1428;
+    --grad-mid7: #0a1020;
+    --grad-mid8: #0a0c18;
+    --grad-mid9: #0a0810;
+    --grad-end: #0a0408;
+    --glow-color: rgba(30, 100, 200, 0.25);
+    --glow-color-intense: rgba(50, 130, 240, 0.3);
+    --card-hover-border: rgba(30, 100, 200, 0.4);
+    --card-hover-shadow: rgba(0, 80, 200, 0.4);
+    --top-glow: rgba(30, 100, 200, 0.4);
+  }
+  body.theme-azul::after {
+    background: radial-gradient(ellipse at 30% 70%, rgba(30,100,200,0.4), transparent 60%);
+    transform: scale(1.5) rotate(10deg);
+  }
+
+  /* Tema Verde Neon */
+  body.theme-verde {
+    --grad-start: #10b981;
+    --grad-mid1: #0e9f6e;
+    --grad-mid2: #0c855b;
+    --grad-mid3: #0a6b48;
+    --grad-mid4: #085735;
+    --grad-mid5: #064322;
+    --grad-mid6: #053a1c;
+    --grad-mid7: #043016;
+    --grad-mid8: #032610;
+    --grad-mid9: #021c0a;
+    --grad-end: #011205;
+    --glow-color: rgba(16, 185, 129, 0.25);
+    --glow-color-intense: rgba(16, 185, 129, 0.3);
+    --card-hover-border: rgba(16, 185, 129, 0.4);
+    --card-hover-shadow: rgba(0, 150, 100, 0.4);
+    --top-glow: rgba(16, 185, 129, 0.4);
+  }
+  body.theme-verde::after {
+    background: radial-gradient(circle at 20% 30%, rgba(16,185,129,0.4), transparent 70%),
+                radial-gradient(circle at 90% 80%, rgba(16,185,129,0.3), transparent 50%);
+    transform: scale(1.1);
+  }
+
+  /* Tema Roxo Psicodélico */
+  body.theme-roxo {
+    --grad-start: #8b5cf6;
+    --grad-mid1: #7c4ad6;
+    --grad-mid2: #6d38b6;
+    --grad-mid3: #5e2e96;
+    --grad-mid4: #4f2476;
+    --grad-mid5: #401a56;
+    --grad-mid6: #39164a;
+    --grad-mid7: #32123e;
+    --grad-mid8: #2b0e32;
+    --grad-mid9: #240a26;
+    --grad-end: #1d061a;
+    --glow-color: rgba(139, 92, 246, 0.25);
+    --glow-color-intense: rgba(139, 92, 246, 0.3);
+    --card-hover-border: rgba(139, 92, 246, 0.4);
+    --card-hover-shadow: rgba(100, 50, 200, 0.4);
+    --top-glow: rgba(139, 92, 246, 0.4);
+  }
+  body.theme-roxo::after {
+    background: radial-gradient(ellipse at 70% 40%, rgba(139,92,246,0.4), transparent 60%),
+                radial-gradient(circle at 10% 80%, rgba(139,92,246,0.3), transparent 40%);
+    transform: scale(1.3) translate(-5%, 10%);
+  }
+
+  /* Tema Laranja Reator */
+  body.theme-laranja {
+    --grad-start: #f97316;
+    --grad-mid1: #d95f12;
+    --grad-mid2: #b94b0e;
+    --grad-mid3: #99370a;
+    --grad-mid4: #792306;
+    --grad-mid5: #591f04;
+    --grad-mid6: #491b03;
+    --grad-mid7: #391702;
+    --grad-mid8: #291301;
+    --grad-mid9: #190f00;
+    --grad-end: #090b00;
+    --glow-color: rgba(249, 115, 22, 0.25);
+    --glow-color-intense: rgba(249, 115, 22, 0.3);
+    --card-hover-border: rgba(249, 115, 22, 0.4);
+    --card-hover-shadow: rgba(200, 80, 0, 0.4);
+    --top-glow: rgba(249, 115, 22, 0.4);
+  }
+  body.theme-laranja::after {
+    background: radial-gradient(circle at 60% 20%, rgba(249,115,22,0.4), transparent 50%),
+                radial-gradient(circle at 30% 90%, rgba(249,115,22,0.3), transparent 40%);
+    transform: rotate(15deg) scale(1.4);
+  }
+
+  /* Tema Terminal (amarelo/verde) */
+  body.theme-terminal {
+    --grad-start: #0f0f00;
+    --grad-mid1: #121002;
+    --grad-mid2: #141103;
+    --grad-mid3: #171205;
+    --grad-mid4: #1a1307;
+    --grad-mid5: #1d1409;
+    --grad-mid6: #20150b;
+    --grad-mid7: #23160d;
+    --grad-mid8: #26170f;
+    --grad-mid9: #291811;
+    --grad-end: #0a0a00;
+    --glow-color: rgba(255, 200, 100, 0.3);
+    --glow-color-intense: rgba(255, 180, 50, 0.4);
+    --card-hover-border: rgba(255, 200, 80, 0.6);
+    --card-hover-shadow: rgba(200, 150, 0, 0.5);
+    --top-glow: rgba(255, 200, 80, 0.3);
+  }
+  body.theme-terminal::after {
+    background: linear-gradient(45deg, transparent 30%, rgba(255,200,100,0.3) 50%, transparent 70%);
+    background-size: 200% 200%;
+    transform: skewX(-10deg) scale(1.2);
+  }
+
+  /* Tema Rosa Choque */
+  body.theme-rosa {
+    --grad-start: #0f0008;
+    --grad-mid1: #12010a;
+    --grad-mid2: #14020c;
+    --grad-mid3: #17030e;
+    --grad-mid4: #1a0410;
+    --grad-mid5: #1d0512;
+    --grad-mid6: #200614;
+    --grad-mid7: #230716;
+    --grad-mid8: #260818;
+    --grad-mid9: #29091a;
+    --grad-end: #0a0005;
+    --glow-color: rgba(255, 20, 147, 0.3);
+    --glow-color-intense: rgba(255, 20, 147, 0.4);
+    --card-hover-border: rgba(255, 20, 147, 0.6);
+    --card-hover-shadow: rgba(200, 0, 100, 0.5);
+    --top-glow: rgba(255, 20, 147, 0.3);
+  }
+  body.theme-rosa::after {
+    background: radial-gradient(circle at 80% 30%, rgba(255,20,147,0.4), transparent 50%),
+                radial-gradient(circle at 20% 70%, rgba(255,20,147,0.3), transparent 40%);
+    transform: scale(1.5) rotate(-5deg);
+  }
+
+  /* ===== EFEITOS DE FUNDO (partículas) ===== */
+  #particles-simulado {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
   }
   
   #particles-simulado::before,
@@ -90,22 +303,21 @@
     100% { background-position: 600px 400px; }
   }
 
-  /* Efeitos Glow - adaptado do .glow-ball do site original */
   .glow-ball {
     position: fixed;
     width: 300px;
     height: 300px;
     border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, rgba(180, 40, 40, 0.25), transparent 70%);
+    background: radial-gradient(circle at 30% 30%, var(--glow-color), transparent 70%);
     filter: blur(60px);
     pointer-events: none;
-    z-index: 1;
+    z-index: 2;
   }
   
   .glow-top {
     top: -150px;
     right: -100px;
-    background: radial-gradient(circle, rgba(210, 60, 60, 0.3), transparent 70%);
+    background: radial-gradient(circle, var(--glow-color-intense), transparent 70%);
   }
   
   .glow-middle {
@@ -113,7 +325,7 @@
     left: -100px;
     width: 400px;
     height: 400px;
-    background: radial-gradient(circle, rgba(150, 30, 30, 0.2), transparent 70%);
+    background: radial-gradient(circle, var(--glow-color), transparent 70%);
   }
   
   .glow-bottom {
@@ -121,10 +333,9 @@
     right: 20%;
     width: 350px;
     height: 350px;
-    background: radial-gradient(circle, rgba(190, 50, 50, 0.25), transparent 70%);
+    background: radial-gradient(circle, var(--glow-color-intense), transparent 70%);
   }
 
-  /* Faixa de brilho no topo - igual ao site */
   .top-glow-bar {
     position: fixed;
     top: 0;
@@ -132,26 +343,201 @@
     right: 0;
     height: 64px;
     pointer-events: none;
-    background: linear-gradient(to bottom, rgba(185, 15, 15, 0.4), rgba(185, 15, 15, 0.2) 70%, transparent);
-    z-index: 2;
+    background: linear-gradient(to bottom, var(--top-glow), color-mix(in srgb, var(--top-glow) 50%, transparent) 70%, transparent);
+    z-index: 3;
     filter: blur(8px);
   }
 
-  /* Título no estilo SKYNET */
+  /* ===== BOTÃO HAMBÚRGUER ===== */
+  .menu-toggle {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 101;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .menu-toggle span {
+    width: 22px;
+    height: 2px;
+    background: white;
+    border-radius: 4px;
+    transition: 0.3s;
+  }
+
+  .menu-toggle:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: var(--card-hover-border);
+  }
+
+  /* ===== OVERLAY DO MENU ===== */
+  .menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(3px);
+    z-index: 90;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+  }
+
+  .menu-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* ===== DRAWER LATERAL ===== */
+  .drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: min(300px, 80vw);
+    height: 100vh;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(255,255,255,0.1);
+    z-index: 100;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    color: white;
+    font-family: 'Inter', sans-serif;
+    box-shadow: 5px 0 30px rgba(0,0,0,0.5);
+  }
+
+  .drawer.open {
+    transform: translateX(0);
+  }
+
+  .drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .drawer-header span {
+    font-weight: 600;
+    background: linear-gradient(135deg, #fff, #aaa);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .drawer-close {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.6);
+    font-size: 1.4rem;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+  }
+
+  .drawer-close:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+  }
+
+  .drawer-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+  }
+
+  .drawer-content h3 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 15px;
+  }
+
+  .theme-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .theme-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    margin-bottom: 4px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+  }
+
+  .theme-list li:hover {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.1);
+  }
+
+  .theme-list li.active {
+    background: rgba(255,255,255,0.1);
+    border-color: var(--card-hover-border);
+  }
+
+  .theme-color {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  .theme-color.classic { background: #A11111; box-shadow: 0 0 15px #A11111; }
+  .theme-color.azul { background: #0a4da4; box-shadow: 0 0 15px #0a4da4; }
+  .theme-color.verde { background: #10b981; box-shadow: 0 0 15px #10b981; }
+  .theme-color.roxo { background: #8b5cf6; box-shadow: 0 0 15px #8b5cf6; }
+  .theme-color.laranja { background: #f97316; box-shadow: 0 0 15px #f97316; }
+  .theme-color.terminal { background: #ffb000; box-shadow: 0 0 15px #ffb000; }
+  .theme-color.rosa { background: #ff1493; box-shadow: 0 0 15px #ff1493; }
+
+  .drawer-footer {
+    padding: 16px 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.5);
+  }
+
+  /* ===== TÍTULO ===== */
   h1 {
     position: relative;
-    z-index: 10;
     font-weight: 600;
     font-size: 2.5rem;
     letter-spacing: -0.02em;
-    margin: 30px 0 40px;
+    margin: 0 0 40px 0; /* removido margin-left, centralizado pelo flex do body */
     text-shadow: 0 4px 20px rgba(255, 0, 0, 0.3);
     display: inline-block;
     padding: 0 30px;
   }
-  
 
-  /* Container dos cards com espaçamento */
+  /* ===== CARDS COM ÍCONES CSS ===== */
   .cards-container {
     display: flex;
     flex-wrap: wrap;
@@ -160,14 +546,11 @@
     max-width: 900px;
     margin: 0 auto;
     position: relative;
-    z-index: 15;
   }
 
-  /* Cards no estilo do menu do SKYNETchat */
   .card {
     background: rgba(20, 20, 20, 0.7);
     backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 24px;
     padding: 28px 20px;
@@ -178,11 +561,10 @@
     overflow: hidden;
   }
   
-  /* Efeito de hover do card (igual aos botões do site) */
   .card:hover {
     transform: translateY(-4px);
-    border-color: rgba(180, 40, 40, 0.4);
-    box-shadow: 0 25px 45px -12px rgba(180, 0, 0, 0.4);
+    border-color: var(--card-hover-border);
+    box-shadow: 0 25px 45px -12px var(--card-hover-shadow);
     background: rgba(30, 30, 30, 0.8);
   }
   
@@ -190,7 +572,6 @@
     transform: scale(0.98);
   }
   
-  /* Brilho interno nos cards (glow adaptado) */
   .card::before {
     content: '';
     position: absolute;
@@ -198,7 +579,7 @@
     left: -2px;
     right: -2px;
     bottom: -2px;
-    background: linear-gradient(45deg, transparent 40%, rgba(200, 60, 60, 0.2), transparent 60%);
+    background: linear-gradient(45deg, transparent 40%, var(--glow-color), transparent 60%);
     border-radius: 24px;
     pointer-events: none;
     z-index: -1;
@@ -210,7 +591,6 @@
     opacity: 1;
   }
 
-  /* Títulos dos cards */
   .card h3 {
     font-size: 1.1rem;
     font-weight: 500;
@@ -218,23 +598,104 @@
     letter-spacing: 0.05em;
     color: rgba(255, 255, 255, 0.7);
     margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
   }
 
-  /* Valores - estilo inspirado nos elementos de destaque */
+  /* Ícones CSS personalizados */
+  .icon-temp, .icon-hum, .icon-pres {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background: transparent;
+    position: relative;
+  }
+
+  /* Termômetro */
+  .icon-temp::before {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 18px;
+    background: currentColor;
+    border-radius: 4px 4px 0 0;
+    bottom: 0;
+    left: 8px;
+    box-shadow: 0 0 8px currentColor;
+  }
+  .icon-temp::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    top: 0;
+    left: 5px;
+    box-shadow: 0 0 8px currentColor;
+  }
+
+  /* Gota (umidade) */
+  .icon-hum::before {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: currentColor;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    top: 4px;
+    left: 4px;
+    box-shadow: 0 0 8px currentColor;
+  }
+
+  /* Gráfico de barras (pressão) */
+  .icon-pres::before {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 20px;
+    background: currentColor;
+    bottom: 0;
+    left: 2px;
+    box-shadow: 0 0 8px currentColor;
+  }
+  .icon-pres::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 14px;
+    background: currentColor;
+    bottom: 0;
+    left: 10px;
+    box-shadow: 0 0 8px currentColor;
+  }
+  .icon-pres span { /* terceira barra */
+    position: absolute;
+    width: 4px;
+    height: 8px;
+    background: currentColor;
+    bottom: 0;
+    left: 18px;
+    box-shadow: 0 0 8px currentColor;
+  }
+
   .valor {
     font-size: 3rem;
     font-weight: 700;
     background: linear-gradient(135deg, #fff, #ffb3b3);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     text-shadow: 0 0 30px rgba(255, 80, 80, 0.5);
     line-height: 1.2;
   }
 
-  /* Botão de atualização - estilo igual ao botão "Criar novo chat" do site */
+  /* ===== BOTÃO DE ATUALIZAÇÃO ===== */
   .update-btn {
     position: relative;
-    z-index: 20;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: white;
@@ -255,24 +716,22 @@
   
   .update-btn:hover {
     background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 80, 80, 0.4);
+    border-color: var(--card-hover-border);
   }
   
   .update-btn:active {
     transform: scale(0.97);
   }
   
-  /* Ícone SVG do botão (adaptado do site) */
   .btn-icon {
     width: 16px;
     height: 16px;
     fill: currentColor;
   }
 
-  /* Rodapé - inspirado no menu inferior */
+  /* ===== RODAPÉ E TIMESTAMP ===== */
   .footer-note {
     position: relative;
-    z-index: 20;
     margin-top: 30px;
     font-size: 0.8rem;
     color: rgba(255, 255, 255, 0.4);
@@ -292,7 +751,6 @@
     color: #ffaaaa;
   }
   
-  /* Timestamp - estilo igual às tags do site */
   .timestamp {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 20px;
@@ -304,10 +762,21 @@
     border: 1px solid rgba(255, 255, 255, 0.05);
   }
 
-  /* Adaptação mobile */
+  /* ===== RESPONSIVIDADE ===== */
   @media (max-width: 600px) {
     h1 { font-size: 1.8rem; }
     .card { width: 100%; max-width: 280px; }
+    .main-content {
+      padding: 0 10px;
+    }
+  }
+
+  /* Ajuste para telas muito pequenas */
+  @media (max-height: 600px) {
+    .main-content {
+      justify-content: flex-start;
+      padding-top: 20px;
+    }
   }
 </style>
 </head>
@@ -324,34 +793,105 @@
 <!-- Barra de brilho superior -->
 <div class="top-glow-bar"></div>
 
-<!-- Conteúdo principal -->
-<h1>ESTAÇÃO METEOROLÓGICA</h1>
+<!-- BOTÃO HAMBÚRGUER -->
+<button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
 
-<div class="cards-container">
-  <div class="card">
-    <h3>Temperatura</h3>
-    <div class="valor" id="temp">--</div>
+<!-- OVERLAY DO MENU -->
+<div class="menu-overlay" id="menuOverlay"></div>
+
+<!-- DRAWER LATERAL -->
+<aside class="drawer" id="drawer">
+  <div class="drawer-header">
+    <span>ESTAÇÃO TCC 2026</span>
+    <button class="drawer-close" id="closeDrawer">✕</button>
+  </div>
+  <div class="drawer-content">
+    <h3>TEMAS</h3>
+    <ul class="theme-list">
+      <li data-theme="classic">
+        <span class="theme-color classic"></span>
+        Clássico (Vermelho)
+      </li>
+      <li data-theme="azul">
+        <span class="theme-color azul"></span>
+        Azul Elétrico
+      </li>
+      <li data-theme="verde">
+        <span class="theme-color verde"></span>
+        Verde Neon
+      </li>
+      <li data-theme="roxo">
+        <span class="theme-color roxo"></span>
+        Roxo Psicodélico
+      </li>
+      <li data-theme="laranja">
+        <span class="theme-color laranja"></span>
+        Laranja Reator
+      </li>
+      <li data-theme="terminal">
+        <span class="theme-color terminal"></span>
+        Terminal (amarelo/verde)
+      </li>
+      <li data-theme="rosa">
+        <span class="theme-color rosa"></span>
+        Rosa Choque
+      </li>
+    </ul>
+  </div>
+  <div class="drawer-footer">
+    <small>⚡ Tema salvo automaticamente</small>
+  </div>
+</aside>
+
+<!-- Conteúdo principal agora dentro de main-content -->
+<div class="main-content">
+  <h1>ESTAÇÃO METEOROLÓGICA</h1>
+
+  <div class="cards-container">
+    <div class="card">
+      <h3>
+        <i class="icon-temp" style="color: var(--card-hover-border);"></i>
+        Temperatura
+      </h3>
+      <div class="valor" id="temp">--</div>
+    </div>
+
+    <div class="card">
+      <h3>
+        <i class="icon-hum" style="color: var(--card-hover-border);"></i>
+        Umidade
+      </h3>
+      <div class="valor" id="hum">--</div>
+    </div>
+
+    <div class="card">
+      <h3>
+        <i class="icon-pres" style="color: var(--card-hover-border);"></i>
+        Pressão
+      </h3>
+      <div class="valor" id="pres">--</div>
+    </div>
   </div>
 
-  <div class="card">
-    <h3>Umidade</h3>
-    <div class="valor" id="hum">--</div>
+  <!-- Botão de atualização manual -->
+  <button class="update-btn" onclick="atualizar()">
+    <svg class="btn-icon" viewBox="0 0 13 12" fill="none">
+      <path d="M3.61414e-08 7.12415V4.95728C3.61414e-08 4.20755 -0.000255206 3.61219 0.0421343 3.1333C0.0850873 2.64829 0.174603 2.23474 0.383522 1.85619L0.519381 1.63236C0.857669 1.12322 1.34303 0.708868 1.92275 0.436214L2.0784 0.368754C2.44612 0.223137 2.84648 0.154994 3.30634 0.120312C3.82511 0.0811934 4.46943 0.0814209 5.28156 0.0814209H5.72183C6.04515 0.0814209 6.3073 0.323539 6.30743 0.62195C6.30743 0.920458 6.04523 1.16248 5.72183 1.16248H5.28156C4.45019 1.16248 3.86179 1.16271 3.40179 1.1974C3.06202 1.22302 2.82133 1.26621 2.63046 1.32916L2.45418 1.399C2.0673 1.58096 1.7435 1.85773 1.51773 2.1975L1.42744 2.34672C1.31657 2.54757 1.24607 2.80313 1.20903 3.2214C1.17144 3.64606 1.1712 4.18971 1.1712 4.95728V7.12415C1.1712 7.89174 1.17144 8.4354 1.20903 8.86008C1.24607 9.27825 1.31658 9.53387 1.42744 9.73471L1.51773 9.88394C1.74349 10.2237 2.06733 10.5005 2.45418 10.6824L2.63046 10.7523C2.82132 10.8152 3.06204 10.8576 3.40179 10.8832C3.8618 10.9179 4.45015 10.919 5.28156 10.919H7.62993C8.46134 10.919 9.04972 10.9179 9.50972 10.8832C9.96267 10.8491 10.2398 10.7847 10.4574 10.6824L10.6198 10.5983C10.9877 10.39 11.2879 10.0917 11.485 9.73471L11.5606 9.57199C11.6288 9.39586 11.6747 9.17365 11.7025 8.86008C11.74 8.4354 11.7403 7.89174 11.7403 7.12415V6.71776C11.7404 6.41948 12.0027 6.17735 12.3259 6.17727C12.6492 6.17727 12.9114 6.41939 12.9115 6.71776V7.12415C12.9115 7.87394 12.9127 8.46922 12.8702 8.9481C12.8326 9.37254 12.7588 9.74219 12.601 10.0816L12.528 10.2252C12.2327 10.7602 11.7835 11.2076 11.2322 11.5198L10.9896 11.6452C10.5794 11.8382 10.1309 11.9215 9.60517 11.9611C9.08644 12.0002 8.44205 12 7.62993 12H5.28156C4.46944 12 3.8251 12.0002 3.30634 11.9611C2.8465 11.9264 2.44611 11.8583 2.0784 11.7127L1.92275 11.6452C1.34306 11.3726 0.85766 10.9582 0.519381 10.4491L0.383522 10.2252C0.174586 9.84671 0.0850961 9.43317 0.0421343 8.9481C-0.000255206 8.46922 3.61414e-08 7.87394 3.61414e-08 7.12415ZM9.50628 0.443358C10.3476 -0.190022 11.5881 -0.144758 12.3724 0.579084L12.5194 0.729106C13.1601 1.4541 13.1603 2.50045 12.5194 3.22537L12.3724 3.37538L7.92834 7.4782C7.45699 7.91328 6.86271 8.21457 6.21627 8.34966L5.93681 8.39729L4.33652 8.60763C4.15412 8.63161 3.96977 8.57553 3.83949 8.45524C3.70923 8.33495 3.64836 8.16483 3.67438 7.99651L3.90312 6.5201L3.95472 6.26139C4.10114 5.6648 4.42758 5.11612 4.8989 4.68107L9.34294 0.579084L9.50628 0.443358ZM11.5443 1.34344C11.1887 1.01534 10.6263 0.994388 10.245 1.28153L10.171 1.34344L5.72699 5.44623C5.41246 5.73657 5.19437 6.10217 5.09668 6.50027L5.06227 6.67249L4.94361 7.43528L5.77084 7.32653L5.95745 7.29484C6.38885 7.20462 6.78566 7.00337 7.10028 6.71297L11.5443 2.61103L11.6113 2.54277C11.9017 2.21412 11.9019 1.73951 11.6113 1.41091L11.5443 1.34344Z" fill="currentColor"/>
+    </svg>
+    <span>ATUALIZAR DADOS</span>
+  </button>
+
+  <!-- Timestamp -->
+  <div class="timestamp" id="timestamp">Atualizando a cada 15s</div>
+
+  <div class="footer-note">
+    <span>DADOS VIA THINGSPEAK • TCC 2026</span><br>
   </div>
-
-  <div class="card">
-    <h3>Pressão</h3>
-    <div class="valor" id="pres">--</div>
-  </div>
-</div>
-
-
-<!-- Timestamp com estilo do site -->
-<div class="timestamp" id="timestamp">Atualizando a cada 15s</div>
-
-<div class="footer-note">
-  <span>DADOS VIA THINGSPEAK • TCC 2026</span><br>
-
-</div>
+</div> <!-- fim main-content -->
 
 <script>
 const channelID = "3276829";
@@ -374,10 +914,8 @@ async function atualizar(){
     document.getElementById("hum").innerText  = feed.field2 + " %";
     document.getElementById("pres").innerText = feed.field3 + " hPa";
     
-    // Atualiza timestamp
     document.getElementById("timestamp").innerText = formatarTimestamp();
     
-    // Pequeno efeito visual nos cards quando atualiza
     const cards = document.querySelectorAll('.card');
     cards.forEach(card => {
       card.style.transition = 'all 0.1s';
@@ -393,13 +931,65 @@ async function atualizar(){
   }
 }
 
-// Atualização automática
 setInterval(atualizar, 15000);
 atualizar();
-
-// Atualiza timestamp inicial
 document.getElementById("timestamp").innerText = formatarTimestamp();
-</script>
 
+// ===== CONTROLE DO MENU LATERAL =====
+const menuToggle = document.getElementById('menuToggle');
+const drawer = document.getElementById('drawer');
+const overlay = document.getElementById('menuOverlay');
+const closeBtn = document.getElementById('closeDrawer');
+
+function openMenu() {
+  drawer.classList.add('open');
+  overlay.classList.add('active');
+}
+
+function closeMenu() {
+  drawer.classList.remove('open');
+  overlay.classList.remove('active');
+}
+
+menuToggle.addEventListener('click', openMenu);
+closeBtn.addEventListener('click', closeMenu);
+overlay.addEventListener('click', closeMenu);
+
+// ===== SISTEMA DE TEMAS =====
+const themeLinks = document.querySelectorAll('.theme-list li');
+const body = document.body;
+
+function applyTheme(themeName) {
+  body.className = body.className.replace(/theme-\w+/g, '').trim();
+  body.classList.add(`theme-${themeName}`);
+  localStorage.setItem('station-theme', themeName);
+
+  themeLinks.forEach(link => {
+    const theme = link.dataset.theme;
+    link.classList.toggle('active', theme === themeName);
+  });
+}
+
+const savedTheme = localStorage.getItem('station-theme') || 'classic';
+applyTheme(savedTheme);
+
+themeLinks.forEach(link => {
+  link.addEventListener('click', () => {
+    const theme = link.dataset.theme;
+    applyTheme(theme);
+    closeMenu();
+  });
+});
+</script>
+<!-- ajuste para o ícone de pressão (terceira barra) -->
+<script>
+  // Adiciona o span que faltava para a terceira barra do ícone de pressão
+  document.querySelectorAll('.icon-pres').forEach(el => {
+    if (!el.querySelector('span')) {
+      const span = document.createElement('span');
+      el.appendChild(span);
+    }
+  });
+</script>
 </body>
 </html>
