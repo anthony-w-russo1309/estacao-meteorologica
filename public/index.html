@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+  <title>Estação Meteorológica · TCC 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/themes.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <!-- Efeitos de fundo -->
+  <div id="particles-simulado"></div>
+  <div class="glow-ball glow-top"></div>
+  <div class="glow-ball glow-middle"></div>
+  <div class="glow-ball glow-bottom"></div>
+  <div class="top-glow-bar"></div>
+
+  <!-- Botão menu -->
+  <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="menu-overlay" id="menuOverlay" aria-hidden="true"></div>
+
+  <!-- Menu lateral -->
+  <aside class="drawer" id="drawer" aria-label="Menu principal">
+    <div class="drawer-header">
+      <span>ESTAÇÃO TCC 2026</span>
+      <button class="drawer-close" id="closeDrawer">✕</button>
+    </div>
+    <div class="drawer-content">
+      <div class="menu-section">
+        <div class="menu-header" id="inicioHeader" role="button" tabindex="0">
+          <span>
+            <svg class="icon icon-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 10L12 3l9 7"/>
+              <path d="M5 10v10h14V10"/>
+              <path d="M9 20v-6h6v6"/>
+            </svg>
+            INÍCIO
+          </span>
+        </div>
+      </div>
+      <div class="menu-section">
+        <div class="menu-header" id="graficosHeader" role="button" tabindex="0" aria-expanded="false">
+          <span>
+            <svg class="icon icon-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 20V4"/>
+              <path d="M4 20h16"/>
+              <path d="M8 16v-6"/>
+              <path d="M12 16v-9"/>
+              <path d="M16 16v-3"/>
+            </svg>
+            GRÁFICOS
+          </span>
+          <span class="arrow">▼</span>
+        </div>
+        <ul class="submenu collapsed" id="graficosSubmenu">
+          <li data-section="temp">
+            <svg class="icon icon-temp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 14.76V5a2 2 0 1 0-4 0v9.76a4 4 0 1 0 4 0Z"/>
+            </svg>
+            Temperatura
+          </li>
+          <li data-section="hum">
+            <svg class="icon icon-hum" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C12 2 5 10 5 15a7 7 0 0 0 14 0c0-5-7-13-7-13Z"/>
+            </svg>
+            Umidade
+          </li>
+          <li data-section="pres">
+            <svg class="icon icon-pres" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="4" y="10" width="3" height="10" rx="1"/>
+              <rect x="10" y="6" width="3" height="14" rx="1"/>
+              <rect x="16" y="3" width="3" height="17" rx="1"/>
+            </svg>
+            Pressão
+          </li>
+          <li data-section="ultimas">
+            <svg class="icon icon-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 6v6l4 2"/>
+            </svg>
+            Últimas Horas
+          </li>
+        </ul>
+      </div>
+      <div class="menu-section">
+        <div class="menu-header" id="configHeader" role="button" tabindex="0" aria-expanded="false">
+          <span>
+            <svg class="icon icon-config" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H5.78a1.65 1.65 0 0 0-1.51 1 1.65 1.65 0 0 0 .33 1.82L12 22z"/>
+              <path d="M4.6 9a1.65 1.65 0 0 0-.33 1.82A1.65 1.65 0 0 0 5.78 12h12.44a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82L12 2z"/>
+            </svg>
+            CONFIGURAÇÕES
+          </span>
+          <span class="arrow">▼</span>
+        </div>
+        <ul class="submenu collapsed" id="configSubmenu">
+          <li id="apiConfigItem">
+            <svg class="icon icon-api" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="2" width="20" height="20" rx="2"/>
+              <path d="M7 2v4M17 2v4M2 10h20M9 16h6"/>
+            </svg>
+            API ThingSpeak
+          </li>
+          <li style="list-style: none; margin-left: 16px;">
+            <ul id="temasSubmenuConfig">
+              <li data-theme="classic"><svg class="icon icon-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2v4M22 12h-4M12 22v-4M2 12h4"/></svg> Clássico</li>
+              <li data-theme="azul"><svg class="icon icon-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2v4M22 12h-4M12 22v-4M2 12h4"/></svg> Azul Elétrico</li>
+              <li data-theme="verde"><svg class="icon icon-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2v4M22 12h-4M12 22v-4M2 12h4"/></svg> Verde Neon</li>
+              <li data-theme="roxo"><svg class="icon icon-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2v4M22 12h-4M12 22v-4M2 12h4"/></svg> Roxo Psicodélico</li>
+              <li data-theme="laranja"><svg class="icon icon-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2v4M22 12h-4M12 22v-4M2 12h4"/></svg> Laranja Reator</li>
+              <li data-theme="terminal"><svg class="icon icon-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2v4M22 12h-4M12 22v-4M2 12h4"/></svg> Terminal</li>
+              <li data-theme="rosa"><svg class="icon icon-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2v4M22 12h-4M12 22v-4M2 12h4"/></svg> Rosa Choque</li>
+            </ul>
+          </li>
+          <li id="toggleParticlesMenuItem">
+            <svg class="icon icon-particles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/>
+              <circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/>
+              <circle cx="12" cy="12" r="2"/>
+            </svg>
+            Desativar partículas
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="drawer-footer">
+      <small>⚡ Configurações salvas</small>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <!-- TELA INICIAL -->
+    <section id="home-section" class="content-section active">
+      <h1>ESTAÇÃO METEOROLÓGICA</h1>
+      <div class="cards-container">
+        <div class="card">
+          <h3>
+            <svg class="icon icon-temp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 14.76V5a2 2 0 1 0-4 0v9.76a4 4 0 1 0 4 0Z"/>
+            </svg>
+            Temperatura
+          </h3>
+          <div class="valor" id="home-temp">--</div>
+        </div>
+        <div class="card">
+          <h3>
+            <svg class="icon icon-hum" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C12 2 5 10 5 15a7 7 0 0 0 14 0c0-5-7-13-7-13Z"/>
+            </svg>
+            Umidade
+          </h3>
+          <div class="valor" id="home-hum">--</div>
+        </div>
+        <div class="card">
+          <h3>
+            <svg class="icon icon-pres" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="4" y="10" width="3" height="10" rx="1"/>
+              <rect x="10" y="6" width="3" height="14" rx="1"/>
+              <rect x="16" y="3" width="3" height="17" rx="1"/>
+            </svg>
+            Pressão
+          </h3>
+          <div class="valor" id="home-pres">--</div>
+        </div>
+      </div>
+      <div class="timestamp" id="home-timestamp">Atualizando...</div>
+      <div class="action-buttons">
+        <button class="action-btn" id="exportExcelBtn">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px; height:18px;">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/>
+            <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+          </svg>
+          Relatório Completo (Excel)
+        </button>
+      </div>
+    </section>
+
+    <!-- TELA GRÁFICO TEMPERATURA -->
+    <section id="grafico-temp-section" class="content-section">
+      <h1><svg class="icon icon-temp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 14.76V5a2 2 0 1 0-4 0v9.76a4 4 0 1 0 4 0Z"/></svg> TEMPERATURA</h1>
+      <div class="grafico-container"><canvas id="tempChartPage"></canvas></div>
+      <div class="stats-container">
+        <div class="stat-card"><div class="label">Média</div><div class="value" id="temp-media">--</div></div>
+        <div class="stat-card"><div class="label">Variação</div><div class="value" id="temp-variacao">--</div></div>
+        <div class="stat-card"><div class="label">Atual</div><div class="value" id="temp-atual">--</div></div>
+      </div>
+      <div class="action-buttons">
+        <button class="action-btn" onclick="navegarPara('home')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px; height:18px;"><path d="M3 10L12 3l9 7"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg> Voltar</button>
+        <button class="action-btn" id="exportExcelBtnTemp"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px; height:18px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg> Exportar</button>
+      </div>
+    </section>
+
+    <!-- TELA GRÁFICO UMIDADE -->
+    <section id="grafico-hum-section" class="content-section">
+      <h1><svg class="icon icon-hum" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C12 2 5 10 5 15a7 7 0 0 0 14 0c0-5-7-13-7-13Z"/></svg> UMIDADE</h1>
+      <div class="grafico-container"><canvas id="humChartPage"></canvas></div>
+      <div class="stats-container">
+        <div class="stat-card"><div class="label">Média</div><div class="value" id="hum-media">--</div></div>
+        <div class="stat-card"><div class="label">Variação</div><div class="value" id="hum-variacao">--</div></div>
+        <div class="stat-card"><div class="label">Atual</div><div class="value" id="hum-atual">--</div></div>
+      </div>
+      <div class="action-buttons">
+        <button class="action-btn" onclick="navegarPara('home')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px; height:18px;"><path d="M3 10L12 3l9 7"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg> Voltar</button>
+        <button class="action-btn" id="exportExcelBtnHum"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px; height:18px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg> Exportar</button>
+      </div>
+    </section>
+
+    <!-- TELA GRÁFICO PRESSÃO -->
+    <section id="grafico-pres-section" class="content-section">
+      <h1><svg class="icon icon-pres" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="10" width="3" height="10" rx="1"/><rect x="10" y="6" width="3" height="14" rx="1"/><rect x="16" y="3" width="3" height="17" rx="1"/></svg> PRESSÃO</h1>
+      <div class="grafico-container"><canvas id="presChartPage"></canvas></div>
+      <div class="stats-container">
+        <div class="stat-card"><div class="label">Média</div><div class="value" id="pres-media">--</div></div>
+        <div class="stat-card"><div class="label">Variação</div><div class="value" id="pres-variacao">--</div></div>
+        <div class="stat-card"><div class="label">Atual</div><div class="value" id="pres-atual">--</div></div>
+      </div>
+      <div class="action-buttons">
+        <button class="action-btn" onclick="navegarPara('home')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px; height:18px;"><path d="M3 10L12 3l9 7"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg> Voltar</button>
+        <button class="action-btn" id="exportExcelBtnPres"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px; height:18px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg> Exportar</button>
+      </div>
+    </section>
+
+    <!-- TELA ÚLTIMAS HORAS -->
+    <section id="grafico-ultimas-section" class="content-section">
+      <h1><svg class="icon icon-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> ÚLTIMAS HORAS</h1>
+      <div class="ultimas-tabs">
+        <button class="ultimas-tab active" data-ultima="temp"><svg class="icon icon-temp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px; height:18px;"><path d="M14 14.76V5a2 2 0 1 0-4 0v9.76a4 4 0 1 0 4 0Z"/></svg> Temperatura</button>
+        <button class="ultimas-tab" data-ultima="hum"><svg class="icon icon-hum" viewBox="0 0 24 24" fill="currentColor" style="width:18px; height:18px;"><path d="M12 2C12 2 5 10 5 15a7 7 0 0 0 14 0c0-5-7-13-7-13Z"/></svg> Umidade</button>
+        <button class="ultimas-tab" data-ultima="pres"><svg class="icon icon-pres" viewBox="0 0 24 24" fill="currentColor" style="width:18px; height:18px;"><rect x="4" y="10" width="3" height="10" rx="1"/><rect x="10" y="6" width="3" height="14" rx="1"/><rect x="16" y="3" width="3" height="17" rx="1"/></svg> Pressão</button>
+      </div>
+      <div class="ultimas-chart-container"><canvas id="ultimasChart"></canvas></div>
+      <div class="action-buttons">
+        <button class="action-btn" onclick="navegarPara('home')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px; height:18px;"><path d="M3 10L12 3l9 7"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg> Voltar</button>
+        <button class="action-btn" id="exportExcelBtnUltimas"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px; height:18px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg> Exportar</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal API -->
+  <div class="modal-overlay" id="apiModal">
+    <div class="modal">
+      <h2>Configurar ThingSpeak</h2>
+      <input type="text" id="channelIdInput" placeholder="Channel ID" value="3276829">
+      <div class="modal-buttons">
+        <button class="modal-btn" id="cancelApiBtn">Cancelar</button>
+        <button class="modal-btn primary" id="saveApiBtn">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Filtros -->
+  <div class="modal-overlay" id="filterModal">
+    <div class="modal" style="max-width: 500px;">
+      <h2>Filtrar Dados para Exportação</h2>
+      <div style="margin-bottom: 15px;">
+        <label style="display: block; margin-bottom: 5px;">Data Início</label>
+        <input type="datetime-local" id="filterDataInicio" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white;">
+      </div>
+      <div style="margin-bottom: 15px;">
+        <label style="display: block; margin-bottom: 5px;">Data Fim</label>
+        <input type="datetime-local" id="filterDataFim" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white;">
+      </div>
+      <div style="margin-bottom: 20px;">
+        <label style="display: block; margin-bottom: 5px;">Limite de Registros</label>
+        <select id="filterLimite" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white;">
+          <option value="all">Todos</option>
+          <option value="100">Últimos 100</option>
+          <option value="500">Últimos 500</option>
+          <option value="1000">Últimos 1000</option>
+        </select>
+      </div>
+      <div class="modal-buttons">
+        <button class="modal-btn" id="cancelFilterBtn">Cancelar</button>
+        <button class="modal-btn primary" id="applyFilterBtn">Exportar com Filtros</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/config.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/charts.js"></script>
+  <script src="/js/ui.js"></script>
+  <script src="/js/export.js"></script>
+  <script src="/js/filters.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>
