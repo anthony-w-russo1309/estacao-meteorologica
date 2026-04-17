@@ -1,16 +1,6 @@
+// ==================== public/js/app.js ====================
 // Aplicação principal
-// Função corrigida para formatar timestamp no gráfico
-function formatTimestampForChart(timestamp) {
-  if (!timestamp) return '--:--:--';
-  const date = new Date(timestamp);
-  if (isNaN(date.getTime())) return '--:--:--';
-  return date.toLocaleTimeString('pt-BR', { 
-    hour: '2-digit', 
-    minute: '2-digit',
-    second: '2-digit'
-  });
-}
-// O resto do arquivo permanece igual...
+
 (async function() {
   'use strict';
 
@@ -26,7 +16,9 @@ function formatTimestampForChart(timestamp) {
   }
 
   function formatTimestampForChart(timestamp) {
+    if (!timestamp) return '--:--:--';
     const date = new Date(timestamp);
+    if (isNaN(date.getTime())) return '--:--:--';
     return date.toLocaleTimeString('pt-BR', { 
       hour: '2-digit', 
       minute: '2-digit',
@@ -35,52 +27,60 @@ function formatTimestampForChart(timestamp) {
   }
 
   async function fetchAndUpdate() {
-    console.log('🔄 Buscando dados...');
+    console.log('🔄 Buscando dados da ESP32...');
     UIManager.showLoading();
     
     try {
       const response = await API.getLatest();
-      console.log('📊 Dados recebidos:', response);
+      console.log('📊 Resposta da API:', response);
       
-      if (response && response.success && response.data) {
-        const data = response.data;
-        const temp = data.field1 ? parseFloat(data.field1) : null;
-        const hum = data.field2 ? parseFloat(data.field2) : null;
-        const pres = data.field3 ? parseFloat(data.field3) : null;
-        const isOffline = response.offline || false;
-        const fromCache = data.from_cache || false;
-        const isStale = data.is_stale || false;
-        const dataAge = data.data_age || null;
+      if (response && response.success) {
+        // PRIORIDADE: Usar dados INTERNOS da ESP32
+        const internalData = response.internal;
+        const isOnline = response.is_online;
+        const source = response.source;
+        const status = response.status;
         
-        console.log(`🌡️ Temp: ${temp}, 💧 Hum: ${hum}, 📊 Pres: ${pres}`);
-        console.log(`📦 Cache: ${fromCache}, 📡 Obsoleto: ${isStale}, ⏱️ Idade: ${dataAge}`);
+        // Extrair dados internos
+        const temp = internalData?.temperature !== undefined ? internalData.temperature : null;
+        const hum = internalData?.humidity !== undefined ? internalData.humidity : null;
+        const pres = internalData?.pressure !== undefined ? internalData.pressure : null;
         
+        console.log(`🌡️ Dados INTERNOS ESP32: Temp: ${temp}, Hum: ${hum}, Pres: ${pres}`);
+        console.log(`🔌 Status ESP32: ${isOnline ? 'ONLINE' : 'OFFLINE'}`);
+        console.log(`📦 Fonte dos dados: ${source}`);
+        
+        // Atualizar display com dados INTERNOS
         UIManager.updateHomeDisplay({ temp, hum, pres });
         UIManager.updateCurrentValues(temp, hum, pres);
         
-        // Atualizar timestamp com status
+        // Atualizar status
         UIManager.updateTimestamp({
-          from_cache: fromCache,
-          is_stale: isStale,
-          data_age: dataAge,
-          is_offline: isOffline
+          is_online: isOnline,
+          from_cache: internalData?.from_cache || false,
+          data_age: internalData?.data_age || status?.data_age,
+          message: status?.message
         });
         
-        // Adicionar ao histórico APENAS se os dados são novos (não do cache antigo)
-        const now = new Date();
-        const dataTimestamp = data.created_at ? new Date(data.created_at) : now;
+        // Adicionar ao histórico APENAS dados internos
+        const dataTimestamp = internalData?.timestamp ? new Date(internalData.timestamp) : new Date();
         
-        if (!fromCache || (fromCache && !isStale)) {
-          if (temp !== null) AppState.history.temp.push({ value: temp, timestamp: dataTimestamp });
-          if (hum !== null) AppState.history.hum.push({ value: hum, timestamp: dataTimestamp });
-          if (pres !== null) AppState.history.pres.push({ value: pres, timestamp: dataTimestamp });
-          console.log('📝 Dados adicionados ao histórico');
+        // Verificar se é uma leitura nova
+        const lastTempEntry = AppState.history.temp[AppState.history.temp.length - 1];
+        const isNewReading = !lastTempEntry || 
+          Math.abs(lastTempEntry.timestamp - dataTimestamp) > 5000 || // 5 segundos de diferença
+          lastTempEntry.value !== temp;
+        
+        if (temp !== null && isNewReading) {
+          AppState.history.temp.push({ value: temp, timestamp: dataTimestamp });
+          AppState.history.hum.push({ value: hum, timestamp: dataTimestamp });
+          AppState.history.pres.push({ value: pres, timestamp: dataTimestamp });
+          console.log('📝 Nova leitura adicionada ao histórico');
         } else if (temp !== null && AppState.history.temp.length === 0) {
-          // Primeira carga, usar cache
-          if (temp !== null) AppState.history.temp.push({ value: temp, timestamp: dataTimestamp });
-          if (hum !== null) AppState.history.hum.push({ value: hum, timestamp: dataTimestamp });
-          if (pres !== null) AppState.history.pres.push({ value: pres, timestamp: dataTimestamp });
-          console.log('📝 Primeira carga - usando cache');
+          AppState.history.temp.push({ value: temp, timestamp: dataTimestamp });
+          AppState.history.hum.push({ value: hum, timestamp: dataTimestamp });
+          AppState.history.pres.push({ value: pres, timestamp: dataTimestamp });
+          console.log('📝 Primeira carga - dados adicionados');
         }
         
         // Limitar histórico
@@ -96,7 +96,7 @@ function formatTimestampForChart(timestamp) {
         };
         UIManager.updateStats(stats);
         
-        // Preparar timestamps para os gráficos (com hora:minuto:segundo)
+        // Preparar timestamps para os gráficos
         const timestamps = AppState.history.temp.map(t => 
           formatTimestampForChart(t.timestamp)
         );
@@ -120,12 +120,31 @@ function formatTimestampForChart(timestamp) {
           AppState.charts.ultimas.data.labels = ultimaTimestamps;
           AppState.charts.ultimas.update();
         }
-      } else if (response && response.offline) {
-        UIManager.updateTimestamp({ is_offline: true });
+        
+        // Exibir alertas da análise se houver
+        if (response.analysis && response.analysis.alerts && response.analysis.alerts.length > 0) {
+          console.log('⚠️ Alertas da análise:', response.analysis.alerts);
+          // Opcional: mostrar notificação
+          UIManager.showAlerts(response.analysis.alerts);
+        }
+        
+        if (!isOnline) {
+          console.warn('⚠️ ESP32 está offline! Mostrando últimos dados disponíveis.');
+        }
+        
+      } else if (response && response.error) {
+        console.error('❌ Erro da API:', response.error);
+        UIManager.updateTimestamp({
+          is_online: false,
+          message: response.error
+        });
       }
     } catch (error) {
       console.error('❌ Erro na atualização:', error);
-      UIManager.updateTimestamp({ is_offline: true });
+      UIManager.updateTimestamp({
+        is_online: false,
+        message: error.message
+      });
     } finally {
       UIManager.hideLoading();
     }

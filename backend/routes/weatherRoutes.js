@@ -7,6 +7,7 @@ router.get('/history/:limit?', weatherController.getHistory);
 router.get('/history', weatherController.getHistoryWithFilters);
 router.get('/comparison', weatherController.getComparison);
 router.get('/forecast', weatherController.getForecast);
+router.get('/test-thingspeak', weatherController.testThingSpeak);
 router.post('/config', weatherController.saveConfig);
 router.get('/config', weatherController.getConfig);
 

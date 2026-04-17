@@ -355,3 +355,83 @@ h1 .icon {
   50% { box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1); }
   100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
 }
+
+/* ==================== STATUS BADGE ==================== */
+.status-badge {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 0.75rem;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Inter', sans-serif;
+  border: 1px solid rgba(255,255,255,0.1);
+  pointer-events: none;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+.status-dot.online {
+  background: #66ff66;
+  box-shadow: 0 0 8px #66ff66;
+}
+
+.status-dot.offline {
+  background: #ff6666;
+  box-shadow: 0 0 8px #ff6666;
+}
+
+.status-dot.checking {
+  background: #ffaa44;
+  box-shadow: 0 0 8px #ffaa44;
+  animation: pulse 0.8s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.5; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+  100% { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* Status das bordas dos cards */
+.online-status .card {
+  border-left: 3px solid #66ff66;
+}
+
+.offline-status .card {
+  border-left: 3px solid #ffaa44;
+}
+
+/* Animação de alertas */
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
